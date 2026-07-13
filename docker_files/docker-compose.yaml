@@ -29,10 +29,6 @@ services:
     build: ./user
     image: sudhakar20000/user:v1
     container_name: user
-    environment:
-      MONGO: true
-      REDIS_URL: 'redis://redis:6379'
-      MONGO_URL: "mongodb://mongodb:27017/users"
     depends_on:
       - redis
       - mongodb
