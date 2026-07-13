@@ -4,7 +4,7 @@ services:
     build: ./mongodb
     image: sudhakar20000/mongodb:v1
     container_name: mongodb
-  cataloge:
+  catalogue:
     build: ./catalogue
     image: sudhakar20000/catalogue:v1
     container_name: catalogue
