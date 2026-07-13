@@ -1,7 +1,7 @@
 FROM node:20.0
 WORKDIR /app
 COPY *.json .
-COPY server.js .
+COPY service.js .
 RUN npm install 
 ENV MONGO="true" \
     REDIS_URL="redis://redis:6379" \
