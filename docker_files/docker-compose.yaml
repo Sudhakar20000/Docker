@@ -1,20 +1,20 @@
 name: Flipkart
-  services:
-    mongodb:
-      build: ./mongodb
-      image: sudhakar20000/mongodb:v1
-      container_name: mongodb
-    catalogue:
-      build: ./catalogue
-      image: sudhakar20000/catalogue:v1
-      container_name: catalogue
-      depends_on:
-        - mongodb
-    frontend:
-      build: ./frontend
-      image: sudhakar20000/frontend:v1
-      container_name: frontend
-      depends_on:
-        - mongodb
-        - catalogue
-    
+services:
+  mongodb:
+    build: ./mongodb
+    image: sudhakar20000/mongodb:v1
+    container_name: mongodb
+  cataloge:
+    build: ./catalogue
+    image: sudhakar20000/catalogue:v1
+    container_name: catalogue
+    depends_on:
+      - mongodb
+  frontend:
+    build: ./frontend
+    image: sudhakar20000/frontend:v1
+    container_name: frontend
+    depends_on:
+      - mongodb
+      - catalogue
+  
