@@ -32,8 +32,8 @@ services:
       - catalogue
 networks:
   default:
-  name: flipkart
-  driver: bridge
-  external: false
+    name: flipkart
+    driver: bridge
+    external: false
 
   
