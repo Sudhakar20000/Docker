@@ -30,4 +30,10 @@ services:
     depends_on:
       - redis
       - catalogue
+network:
+  default:
+  name: flipkart
+  driver: bridge
+  external: false
+
   
