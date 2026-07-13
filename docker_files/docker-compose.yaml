@@ -19,6 +19,19 @@ services:
     depends_on:
       - mongodb
       - catalogue
+      - redis
+      - user
+  redis:
+    build: ./redis
+    image: sudhakar20000/redis:v1
+    container_name: redis
+  user:
+    build: ./user
+    image: sudhakar20000/user:v1
+    container_name: user
+    depends_on:
+      - redis
+      - catalogue
 networks:
   default:
     name: flipkart
