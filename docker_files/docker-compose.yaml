@@ -19,8 +19,6 @@ services:
     depends_on:
       - mongodb
       - catalogue
-      - redis
-      - user
 networks:
   default:
     name: flipkart
