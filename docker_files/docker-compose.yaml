@@ -36,9 +36,7 @@ services:
     depends_on:
     - redis
     - mongodb
-    depends_on:
-      - redis
-      - mongodb
+
   cart:
     build: ./cart
     image: sudhakar20000/cart:v1
