@@ -10,9 +10,9 @@ services:
     build: ./catalogue
     image: sudhakar20000/catalogue:v1
     container_name: catalogue
-    envirnoment:
+    environment:
       MONGO_URL: "mongodb://mongodb:27017/catalogue" 
-      MONGO: "true"
+      MONGO: true
     depends_on:
       - mongodb
   frontend:
