@@ -9,7 +9,7 @@ FROM python:3.9.25-alpine3.22
 WORKDIR /app
 EXPOSE 8080
 RUN addgroup -S flipkart && adduser -S -G flipkart flipkart && \
-    chown -R flipkart:roboflipkartshop /app
+    chown -R flipkart:flipkart /app
 COPY  --from=builder /install /usr/local
 COPY --chown=flipkart:flipkart payment.ini *.py requirements.txt .
 USER flipkart
