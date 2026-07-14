@@ -1,26 +1,42 @@
+# Docker Compose file for the Flipkart Microservices Application
+
+# Define the project name
 name: Flipkart
+
 services:
+
+  # -------------------------------
+  # MongoDB Database
+  # -------------------------------
   mongodb:
-    build: ./mongodb
-    image: sudhakar20000/mongodb:v1
+    build: ./mongodb                 # Build image from local Dockerfile
+    image: sudhakar20000/mongodb:v1  # Image name and tag
     container_name: mongodb
     volumes:
-    - mongodb:/data/db
+      - mongodb:/data/db             # Persist MongoDB data
+
+  # -------------------------------
+  # Catalogue Service
+  # -------------------------------
   catalogue:
     build: ./catalogue
     image: sudhakar20000/catalogue:v1
     container_name: catalogue
     environment:
-      MONGO_URL: "mongodb://mongodb:27017/catalogue" 
+      MONGO_URL: "mongodb://mongodb:27017/catalogue"
       MONGO: true
     depends_on:
-      - mongodb
+      - mongodb                      # Start MongoDB before Catalogue
+
+  # -------------------------------
+  # Frontend Service
+  # -------------------------------
   frontend:
     build: ./frontend
     image: sudhakar20000/frontend:v1
     container_name: frontend
     ports:
-      - "80:80" 
+      - "80:80"                      # Expose application on port 80
     depends_on:
       - mongodb
       - catalogue
@@ -30,24 +46,35 @@ services:
       - payment
       - rabbitmq
       - mysql
+
+  # -------------------------------
+  # Redis Cache
+  # -------------------------------
   redis:
     build: ./redis
     image: sudhakar20000/redis:v1
     container_name: redis
     volumes:
-    - redis:/data
+      - redis:/data                  # Persist Redis data
+
+  # -------------------------------
+  # User Service
+  # -------------------------------
   user:
     build: ./user
     image: sudhakar20000/user:v1
     container_name: user
     environment:
       MONGO: true
-      REDIS_URL: 'redis://redis:6379'
+      REDIS_URL: "redis://redis:6379"
       MONGO_URL: "mongodb://mongodb:27017/users"
     depends_on:
-    - redis
-    - mongodb
+      - redis
+      - mongodb
 
+  # -------------------------------
+  # Cart Service
+  # -------------------------------
   cart:
     build: ./cart
     image: sudhakar20000/cart:v1
@@ -59,6 +86,10 @@ services:
     depends_on:
       - redis
       - catalogue
+
+  # -------------------------------
+  # Shipping Service
+  # -------------------------------
   shipping:
     build: ./shipping
     image: sudhakar20000/shipping:v1
@@ -67,14 +98,18 @@ services:
       CART_ENDPOINT: "cart:8080"
       DB_HOST: mysql
     depends_on:
-    - mysql
-    - cart
+      - mysql
+      - cart
+
+  # -------------------------------
+  # Payment Service
+  # -------------------------------
   payment:
     build: ./payment
     image: sudhakar20000/payment:v1
     container_name: payment
     environment:
-      CART_HOST: "cart"
+      CART_HOST: cart
       CART_PORT: 8080
       USER_HOST: user
       USER_PORT: 8080
@@ -82,18 +117,26 @@ services:
       AMQP_USER: roboshop
       AMQP_PASS: roboshop123
     depends_on:
-    - cart
-    - user
-    - rabbitmq
+      - cart
+      - user
+      - rabbitmq
+
+  # -------------------------------
+  # MySQL Database
+  # -------------------------------
   mysql:
-    image: sudhakar20000/mysql:v1
     build: ./mysql
+    image: sudhakar20000/mysql:v1
     container_name: mysql
     command: --mysql-native-password=ON --innodb-lock_wait_timeout=120
     environment:
       MYSQL_ROOT_PASSWORD: "RoboShop@1"
     volumes:
-    - mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql         # Persist MySQL data
+
+  # -------------------------------
+  # RabbitMQ Message Broker
+  # -------------------------------
   rabbitmq:
     image: rabbitmq:3
     container_name: rabbitmq
@@ -101,18 +144,22 @@ services:
       RABBITMQ_DEFAULT_USER: roboshop
       RABBITMQ_DEFAULT_PASS: roboshop123
     volumes:
-    - rabbitmq:/var/lib/rabbitmq
-      
+      - rabbitmq:/var/lib/rabbitmq   # Persist RabbitMQ data
+
+# -------------------------------
+# Network Configuration
+# -------------------------------
 networks:
   default:
     name: flipkart
-    driver: bridge
-    external: false
+    driver: bridge                   # Use Docker bridge network
+    external: false                  # Docker Compose creates the network
+
+# -------------------------------
+# Named Volumes for Persistent Data
+# -------------------------------
 volumes:
   mongodb:
   redis:
   rabbitmq:
   mysql:
-
-
-  
