@@ -38,7 +38,6 @@ This project's Dockerfiles are built around a few core principles:
 - **Layer-cache-aware ordering** — rarely-changing instructions (base image, dependency manifests) are placed above frequently-changing ones (source code) to maximize cache hits and speed up rebuilds.
 - **Consolidated `RUN` instructions** — related shell commands are chained with `&&` to minimize layer count and avoid leaving stray cache artifacts behind.
 
-A full write-up of these practices is available here: [Docker Best Practices – LinkedIn Article](#).
 
 ## 🚀 Getting Started
 
@@ -92,10 +91,3 @@ Refer to each service's Dockerfile / source for the exact variable names it expe
 
 The `docker_infra/` directory contains supporting infrastructure code (networking, security groups, ALB rules, etc.) used to deploy these containers to AWS. See that folder's own documentation for details.
 
-## 🤝 Contributing
-
-Issues and PRs are welcome — especially around further hardening the Dockerfiles (e.g. adding `HEALTHCHECK`, image scanning in CI, or reducing image sizes further).
-
-## 📄 License
-
-This project is for learning/demo purposes as part of a DevOps/AWS training project (Roboshop).
