@@ -13,7 +13,7 @@ Docker/
 
 > Update the tree above if your folder layout differs — see "Structure" note below.
 
-##  Services Containerized
+## 🧩 Services Containerized
 
 | Service     | Description                          | Port |
 |-------------|---------------------------------------|------|
@@ -45,49 +45,48 @@ Clone the repo:
 
 ```bash
 git clone https://github.com/Sudhakar20000/Docker.git
-cd Docker/docker_files
+cd Docker
 ```
 
-Build an individual service image:
+This project ships with a `docker-compose.yml`, so you don't need to build/run each service manually — Compose handles building every service's image and wiring up the shared network in one shot.
+
+Build and start everything:
 
 ```bash
-cd user
-docker build -t roboshop-user:v1 .
+docker compose up -d --build
 ```
 
-Build all service images in one go:
+Check status of all running containers:
 
 ```bash
-for service in mongodb mysql redis rabbitmq catalogue user cart shipping payment frontend; do
-  cd docker_files/$service
-  docker build -t roboshop-$service:v1 .
-  cd -
-done
+docker compose ps
 ```
 
-Run a container:
+Stop and remove everything:
 
 ```bash
-docker run -d --name user -p 8080:8080 --network roboshop-net roboshop-user:v1
+docker compose down
 ```
 
-> Make sure dependent services (e.g. `mongodb` for `user`, `redis` for `cart`) are running on the same Docker network before starting a dependent service, and that connection details are passed via environment variables — not hardcoded.
+> Compose automatically creates a shared network for all services, so containers can reach each other by service name (e.g. the `user` service connects to `mongodb`, not `localhost`) — no manual `--network` flags needed.
 
 ## 🔧 Environment Variables
 
-Each service expects its datastore connection info via environment variables at runtime, for example:
+Each service's datastore connection details are passed in via environment variables defined in `docker-compose.yml` (or an accompanying `.env` file), for example:
 
-```bash
-docker run -d --name user \
-  -e MONGO_URL=mongodb://mongodb:27017/users \
-  -p 8080:8080 \
-  --network roboshop-net \
-  roboshop-user:v1
+```yaml
+user:
+  build: ./docker_files/user
+  environment:
+    - MONGO_URL=mongodb://mongodb:27017/users
+  ports:
+    - "8080:8080"
+  depends_on:
+    - mongodb
 ```
 
-Refer to each service's Dockerfile / source for the exact variable names it expects.
+Refer to `docker-compose.yml` for the exact variable names and values each service expects.
 
 ## 🗺️ Roadmap / Infra
 
-The `docker_infra/` directory contains supporting infrastructure code (networking, security groups, ALB rules, etc.) used to deploy these containers to AWS. See that folder's own documentation for details.
-
+The `docker_infra/` directory contains supporting infrastructure code (networking, security groups,storage rules, etc.) used to deploy these containers to AWS. See that folder's own documentation for details.
